@@ -165,14 +165,22 @@ generalAPIcall(
 					setup();
 				}
 				else{
-                    var choices = document.getElementsByClassName("choice");
-                    choices[0].innerHTML+="\nScore "+ele1.score;
-                    choices[1].innerHTML+="\nScore "+ele2.score;
-                    choices[2].innerHTML+="\nScore "+ele3.score;
-					/*while(gameArea.childElementCount){
-						gameArea.innerHTML=gameArea.innerHTML+"test";
-					};*/
-					create("p",false,"Game over.\nYou picked: "+choice.media.title.romaji,gameArea);
+                    var fuckBat=document.getElementsByClassName("fuck_you_bat")
+                    if(fuckBat[0]==null)
+                    {
+                        var choices = document.getElementsByClassName("choice");
+                        choices[0].innerHTML+="\nScore "+ele1.score;
+                        choices[1].innerHTML+="\nScore "+ele2.score;
+                        choices[2].innerHTML+="\nScore "+ele3.score;
+                        /*while(gameArea.childElementCount){
+                            gameArea.innerHTML=gameArea.innerHTML+"test";
+                        };*/
+                        create("p","fuck_you_bat","Game over.\nYou picked: "+choice.media.title.romaji,gameArea);
+                    }
+                    else
+                    {
+                        alert("（；¬＿¬)");
+                    }
 				}
 			};
 			let choiceA = create("p","choice","1. " + ele1.media.title.romaji,gameArea);
