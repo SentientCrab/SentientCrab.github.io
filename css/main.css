@@ -1,0 +1,121 @@
+body{
+	font-family:Arial,Helvetica,sans-serif;
+	background-color:#202030;
+}
+rt{
+	color:blue;
+}
+.wrapper{
+	margin-left:5%;
+	margin-right:5%;
+	padding:20px;
+}
+.container{
+	display:inline-block;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	padding:10px;
+	margin:5px;
+}
+#main{
+	background-color:#F6F6F0;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+	box-shadow:5px 5px 4px #000000;
+}
+th{
+	text-align:left;
+	font-size:110%;
+}
+td,th{
+	padding:3px;
+	border-left-style:solid;
+	border-top-style:solid;
+	border-width:1px;
+	border-color:#000000;
+}
+tr{
+	background-color:#DDDDDD;
+}
+tr:nth-child(2n+1){
+	background-color:initial;
+}
+table{
+	box-shadow:4px 4px 3px #888888;
+}
+canvas{
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+}
+.article{
+	margin-left:5%;
+	margin-right:10%;
+	font-size: large;
+	line-height: 120%;
+	max-width:700px;
+	font-family:Arial, Helvetica, sans-serif;
+}
+.articleLink{
+	font-size: xx-large;
+	color:#a00404;
+	font-weight: bold;
+}
+.navigationButton{
+	font-size: xx-large;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	padding:4px;
+	margin-bottom:4px;
+}
+.numbered{
+	list-style:latin;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	-moz-border-radius:0px;
+	-webkit-border-radius:0px;
+	border-radius:0px;
+}
+.code{
+	font-family:monospace;
+	
+}
+
+.navigationButton:hover{
+	background-color: #E0E0E0;
+	cursor: move;
+}
+.kanji{
+	font-size: xx-large;
+}
+.sort{
+	cursor: pointer;
+	border: dotted;
+	border-width: 1px;
+	border-radius: 2px;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+.sortArrow{
+	margin-right: -4px;
+	margin-left: -4px;
+}

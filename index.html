@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>List challenge</title>
+		<link rel="stylesheet" href="../../css/main.css">
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+		<link rel="icon" type="image/svg+xml" href="favicon.svg"><!--animated svg icon in Firefox, ignored in other browsers-->
+		<style>
+.choice{
+	cursor: pointer;
+}
+img{
+	display: block;
+}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper" id="main" style="display: inline-block">
+			<h1>List challenge</h1>
+			<div id="challenge"></div>
+			<script>
+
+const url = 'https://graphql.anilist.co'; //the current location of the anilist API
+
+/*
+	query = a graphql query as a string
+	variables = an object with the variables as properties
+	callback = the function that receives the data
+*/
+let generalAPIcall = function(query,variables,callback){
+	let handleResponse = function(response){
+		return response.json().then(function(json){
+			return response.ok ? json : Promise.reject(json);
+		});
+	};
+	let handleData = function(data){
+		callback(data);
+	};
+	let handleError = function(error){
+		alert("Error, check console"); //or insert your own error handling here
+		console.error(error);
+	};
+	let options = {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json",
+		},
+		body: JSON.stringify({
+			query: query,
+			variables: variables
+		})
+	};
+	fetch(url,options).then(handleResponse).then(handleData).catch(handleError);
+};
+
+function returnList(list){
+	if(!list){
+		return null;
+	};
+	let retl = [];
+	for(var i=0;i<list.data.MediaListCollection.lists.length;i++){
+		for(var j=0;j<list.data.MediaListCollection.lists[i].entries.length;j++){
+			let retlObj = list.data.MediaListCollection.lists[i].entries[j];
+			retl.push(retlObj);
+		};
+	};
+	retl.sort((a,b) => a.mediaId - b.mediaId);
+	for(var i=1;i<retl.length;i++){//remove duplicates
+		if(retl[i].mediaId === retl[i-1].mediaId){
+			retl.splice(i-1,1);
+			i--;
+		};
+	};
+	return retl;
+};
+
+function create(type,classes,text,appendLocation,cssText){
+	let element = document.createElement(type);
+	if(Array.isArray(classes)){
+		element.classList.add(...classes);
+	}
+	else if(classes){
+		if(classes[0] === "#"){
+			element.id = classes.substring(1);
+		}
+		else{
+			element.classList.add(classes);
+		}
+	};
+	if(text || text === 0){
+		element.innerText = text;
+	};
+	if(appendLocation){
+		appendLocation.appendChild(element);
+	};
+	if(cssText){
+		element.style.cssText = cssText;
+	};
+	return element;
+};
+let challenge = document.getElementById("challenge");
+let score = 0;
+
+let name = document.location.hash.replace("#","");
+if(!name){
+	name = prompt("Anilist username:");
+}
+
+create("p","title","Pick the entry with the highest score on " + name + "'s list. How far can you get?",challenge);
+let scoreCel = create("p","score","Score: 0",challenge);
+
+generalAPIcall(
+	`query($name: String!){
+		MediaListCollection(userName: $name, type: ANIME){
+			lists{
+				entries{
+					... mediaListEntry
+				}
+			}
+		}
+	}
+	fragment mediaListEntry on MediaList{
+		mediaId
+		media{
+			popularity
+			title{romaji}
+			coverImage{medium}
+		}
+		score(format: POINT_100)
+	}`,
+	{name: name},
+	function(data){
+		let list = returnList(data).filter(a => a.score);
+		if(list.length < 10){
+			create("p",false,"Not enough rated anime :(",challenge);
+			return;
+		};
+		let gameArea = create("div",false,false,challenge);
+		let picker = function(avoiders){
+			while(true){
+				let rand = list[Math.floor(Math.random()*list.length)];
+				if(rand.score > 80 || rand.media.popularity > 1000 || (Math.random() > 0.5 && rand.media.popularity > 500)){
+					if(!avoiders.some(a => a.media.title === rand.media.title)){
+						return rand;
+					}
+				}
+			};
+		};
+		let setup = function(){
+			while(gameArea.childElementCount){
+				gameArea.removeChild(gameArea.lastChild);
+			};
+			let ele1 = picker([]);
+			let ele2 = picker([ele1]);
+			let ele3 = picker([ele1,ele2]);
+			let grader = function(choice){
+				if(choice.score >= Math.max(ele1.score,ele2.score,ele3.score)){
+					score++;
+					scoreCel.innerText = "Score: " + score;
+					setup();
+				}
+				else{
+                    var choices = document.getElementsByClassName("choice");
+                    choices[0].innerHTML+="\nScore "+ele1.score;
+                    choices[1].innerHTML+="\nScore "+ele2.score;
+                    choices[2].innerHTML+="\nScore "+ele3.score;
+					/*while(gameArea.childElementCount){
+						gameArea.innerHTML=gameArea.innerHTML+"test";
+					};*/
+					create("p",false,"Game over.\nYou picked: "+choice.media.title.romaji,gameArea);
+				}
+			};
+			let choiceA = create("p","choice","1. " + ele1.media.title.romaji,gameArea);
+			let imageA = create("img",false,false,choiceA);
+			imageA.src = ele1.media.coverImage.medium;
+			let choiceB = create("p","choice","2. " + ele2.media.title.romaji,gameArea);
+			let imageB = create("img",false,false,choiceB);
+			imageB.src = ele2.media.coverImage.medium;
+			let choiceC = create("p","choice","3. " + ele3.media.title.romaji,gameArea);
+			let imageC = create("img",false,false,choiceC);
+			imageC.src = ele3.media.coverImage.medium;
+			choiceA.onclick = function(){grader(ele1)};
+			choiceB.onclick = function(){grader(ele2)};
+			choiceC.onclick = function(){grader(ele3)};
+		};setup();
+	}
+);
+
+			</script>
+		</div>
+	</body>
+</html>
