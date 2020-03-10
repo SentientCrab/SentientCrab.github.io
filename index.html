@@ -170,15 +170,15 @@ generalAPIcall(
                     {
                         var choices = document.getElementsByClassName("choice");
                         choices[0].innerHTML+="\nScore "+ele1.score;
-                        choices[0].classList.toggle("choice");
                         choices[1].innerHTML+="\nScore "+ele2.score;
-                        choices[1].classList.toggle("choice");
                         choices[2].innerHTML+="\nScore "+ele3.score;
-                        choices[2].classList.toggle("choice");
                         /*while(gameArea.childElementCount){
                             gameArea.innerHTML=gameArea.innerHTML+"test";
                         };*/
                         create("p","fuck_you_bat","Game over.\nYou picked: "+choice.media.title.romaji,gameArea);
+                        choices[2].classList.toggle("choice");
+                        choices[1].classList.toggle("choice");
+                        choices[0].classList.toggle("choice");
                     }
                     else
                     {
